@@ -6,7 +6,7 @@ userChromeJS for Firefox
 
 
 ### xul文件夹
-[rebuild_userChrome.uc.xul](xul/rebuild_userChrome.uc.xul), UC脚本管理器
+[rebuild_userChrome.uc.xul](xul/rebuild_userChrome.uc.xul/rebuild_userChrome.uc.xul), UC脚本管理器
 
 
 ### SubScript文件夹
