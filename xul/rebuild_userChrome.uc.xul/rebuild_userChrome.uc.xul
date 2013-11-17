@@ -2,23 +2,20 @@
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 <!--
 // ==UserScript==
-// @name           rebuild_userChrome_Alice0775_UC脚本管理器xml4AllIn1_20130410.uc.xul
+// @name           rebuild_userChrome_Alice0775_UC脚本管理器_火狐橙菜单+可拖动按钮版20130126.uc.xul
 // @namespace      http://space.geocities.yahoo.co.jp/gl/alice0775
 // @description		Clear the cache of scripts for userChrome.js, Open a new window
 // @note					userChrome.js用のスクリプトのキャッシュをクリアーし,新しいウインドウを開く
 // @include        main
-// @charset        UTF-8
+// @charset			UTF-8
 // @compatibility  Firefox 3.5b4pre 3.6a1pre 4.0b7pre
 // @author         Alice0775
 // @note            ==UC管理器简体中文图形界面 forked by iwo & dannylee - Mozest.com==
-// @version        2013/04/10 20:30 图形界面升级为工具栏菜单、火狐橙菜单、可拖动按钮三合一版
 // @note            转载请注明以下出处！
 // @note			   脚本主页@Mozest论坛 http://g.mozest.com/thread-41859-1-1
+// @version       2013/01/26 19:00 图形界面升级为可拖动至Fx各工具栏的按钮
 // @note			   ================================================================
 // ==/UserScript==
-// @note            2013/03/15 12:30 修复点选启用/禁用时丢失按钮图标的bug，恢复停用子文件夹时的斜体效果
-// @note            2013/02/10 21:10 取消所有xml-E4X语法，合并至init子函数
-// @note            2013/01/26 19:00 图形界面升级为可拖动至Fx各工具栏的按钮
 // @note            2013/01/20 12:00 Fx21a+适用，更正菜单项译名
 // @note            2013/01/12 22:00 基于20121130原版更新，Fx20a适用(已经不使用不再支持的E4X-xml语法)
 // @note            2012/10/10 20:00 随原作更新，修正Ubuntu(Windows也可能)不能正常“打开Chrome文件夹”的错误
@@ -50,7 +47,7 @@
 <script type="application/javascript" xmlns="http://www.w3.org/1999/xhtml"><![CDATA[
     var userChromejs = {
 // --- config ---
-    editor: "C:\\WINDOWS\\system32\\notepad.exe",
+	editor: "C:\\WINDOWS\\system32\\notepad.exe",
 	//editor: "C:\\Program Files\\hidemaru\\hidemaru.exe",
     //editor: "/usr/bin/gedit",
 // --- config ---
@@ -101,156 +98,24 @@
         this.addonbar.addEventListener('drop', this ,true);
       }
       this.addPrefListener(userChromejs.readLaterPrefListener); // 登録処理
-//update set icon image
-	  var iconImage = "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAqklEQVQ4je3QMQoCMRCF4ddPseQGOUEaz2C7leXCXmLBwltsmVZIM+QEniCwN0jhISwtno02ki0MKhEc+JnuYxjgZ8YYQ2stnXOMMfYhhMF7PznnaK2lMYbXM1ZrA8w5L8/9wTI4Atx3HWcRfgTcANwC3AEcAR4AziI8ivAkwkXkC+DjdFVNqnq576Sq6R1gWgNjjH2pajCEMJSqBr33U6lq8OUflmoDbHZuSjQlgt4vzT8AAAAASUVORK5CYII=)";
-
-//update Toolsmenu stuff start
-	  var toolsMenu = document.getElementById('menu_ToolsPopup');
-	  if (!toolsMenu) return;//
-	  var toolsMenu_Preferences = document.getElementById('menu_preferences');
-
-	  this.menu_toolsMenu = document.createElement("menu");
-	  this.menu_toolsMenu.setAttribute("id", "userChromeJSmanager_ToolsMenu");
-	  this.menu_toolsMenu.setAttribute("class", "menu-iconic");//
-	  this.menu_toolsMenu.setAttribute("label", "userChromeJS管理");
-	  this.menu_toolsMenu.setAttribute("tooltiptext", "userChromeJS脚本管理器");
-	  this.menu_toolsMenu.setAttribute("type", "menu");
-	  this.menu_toolsMenu.setAttribute("accesskey", "u");
-	  this.menu_toolsMenu.style.listStyleImage = iconImage;
-
-	  toolsMenu.insertBefore(this.menu_toolsMenu, toolsMenu_Preferences);//
-
-	  var xml_toolsMenu = '\
-			<menupopup id="userChromejs_options_ToolsMenu"\
-				  onpopupshowing="userChromejs.onpopup();"\
-				  context="">\
-				<menuitem label="打开Chrome文件夹"\
-					  id="userChromejs_openChromeFolder_ToolsMenu"\
-					  tooltiptext="即用户脚本文件夹"\
-					  accesskey="h"\
-					  class="menuitem-iconic"\
-					  oncommand=\'new Components.Constructor("@mozilla.org/file/local;1","nsILocalFile", "initWithPath")(Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties).get("UChrm", Components.interfaces.nsIFile).path).reveal();\'/>\
-				<menuitem label="打开新窗口并重置脚本"\
-					  id="userChromejs_rebuild_ToolsMenu"\
-					  tooltiptext="仅重新载入选中的脚本"\
-					  accesskey="x"\
-					  class="menuitem-iconic"\
-					  oncommand="userChromejs.rebuild();"/>\
-				<menuitem label="在每个新窗口都重置脚本"\
-					  id="userChrome_setting_ToolsMenu"\
-					  tooltiptext="仅重新载入选中的脚本"\
-					  accesskey="u"\
-					  oncommand="userChromejs.setting();"\
-					  type="checkbox"/>\
-				<menuitem label="重新启动浏览器"\
-					  id="userChromejs_restartApp_ToolsMenu"\
-					  accesskey="r"\
-					  class="menuitem-iconic"\
-					  oncommand="userChromejs.restartApp();"/>\
-				<menuseparator />\
-				<menu label="userChromeJS用户脚本命令..."\
-					  id="userChromejs_script_options_ToolsMenu"\
-					  accesskey="s"\
-					  class="menu-iconic"\ >\
-					<menupopup id="userChromejs_script_options_ToolsMenuPopup" />\
-				</menu>\
-			</menupopup>\
-		';
-//
-	  var range_toolsMenu = document.createRange();
-	  var referenceNode_toolsMenu = document.getElementById("userChromeJSmanager_ToolsMenu");
-	  
-	  range_toolsMenu.selectNodeContents(referenceNode_toolsMenu);
-	  range_toolsMenu.collapse(false);
-	  range_toolsMenu.insertNode(range_toolsMenu.createContextualFragment(xml_toolsMenu.replace(/\n|\t/g, '')));
-	  range_toolsMenu.detach();
-
-//update Toolsmenu stuff end
-
-//update Appmenu stuff start
-	  var appMenuPrimary = document.getElementById('appmenuPrimaryPane');
-	  if (!appMenuPrimary) return;//
-	  var appMenu_webDeveloper = document.getElementById('appmenu_webDeveloper');
-
-	  this.menu_appMenu = document.createElement("menu");
-	  this.menu_appMenu.setAttribute("id", "userChromeJSmanager_AppMenu");
-	  this.menu_appMenu.setAttribute("class", "menu-iconic");//
-	  this.menu_appMenu.setAttribute("label", "userChromeJS管理");
-	  this.menu_appMenu.setAttribute("tooltiptext", "userChromeJS脚本管理器");
-	  this.menu_appMenu.setAttribute("type", "menu");
-	  this.menu_appMenu.setAttribute("accesskey", "u");
-	  this.menu_appMenu.style.listStyleImage = iconImage;
-
-	  appMenuPrimary.insertBefore(this.menu_appMenu,appMenu_webDeveloper);//
-
-	  var xml_appMenu = '\
-			<menupopup id="userChromejs_options_AppMenu"\
-				  onpopupshowing="userChromejs.onpopup();"\
-				  context="">\
-				<menuitem label="打开Chrome文件夹"\
-					  id="userChromejs_openChromeFolder_AppMenu"\
-					  tooltiptext="即用户脚本文件夹"\
-					  accesskey="h"\
-					  class="menuitem-iconic"\
-					  oncommand=\'new Components.Constructor("@mozilla.org/file/local;1","nsILocalFile", "initWithPath")(Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties).get("UChrm", Components.interfaces.nsIFile).path).reveal();\'/>\
-				<menuitem label="打开新窗口并重置脚本"\
-					  id="userChromejs_rebuild_AppMenu"\
-					  tooltiptext="仅重新载入选中的脚本"\
-					  accesskey="x"\
-					  class="menuitem-iconic"\
-					  oncommand="userChromejs.rebuild();"/>\
-				<menuitem label="在每个新窗口都重置脚本"\
-					  id="userChrome_setting_AppMenu"\
-					  tooltiptext="仅重新载入选中的脚本"\
-					  accesskey="u"\
-					  oncommand="userChromejs.setting();"\
-					  type="checkbox"/>\
-				<menuitem label="重新启动浏览器"\
-					  id="userChromejs_restartApp_AppMenu"\
-					  accesskey="r"\
-					  class="menuitem-iconic"\
-					  oncommand="userChromejs.restartApp();"/>\
-				<menuseparator />\
-				<menu label="userChromeJS用户脚本命令..."\
-					  id="userChromejs_script_options_AppMenu"\
-					  accesskey="s"\
-					  class="menu-iconic"\ >\
-					<menupopup id="userChromejs_script_options_AppMenuPopup" />\
-				</menu>\
-			</menupopup>\
-		';
-//
-	  var range_appMenu = document.createRange();
-	  var referenceNode_appMenu = document.getElementById("userChromeJSmanager_AppMenu");
-	  
-	  range_appMenu.selectNodeContents(referenceNode_appMenu);
-	  range_appMenu.collapse(false);
-	  range_appMenu.insertNode(range_appMenu.createContextualFragment(xml_appMenu.replace(/\n|\t/g, '')));
-	  range_appMenu.detach();
-
-//update Appmenu stuff end
 
 //update menubutton stuff start
-	  var navBar = document.getElementById("nav-bar");//实际在addonbar或nav-bar产生按钮都不影响拖动
-	  if (!navBar) return;//但在addonbar重启Fx后，受urlAddonbar脚本影响，按钮会回到最右的初始位置，每次都需重新按下“定制”
-	  //var addonBar = document.getElementById("addon-bar");
+	  var navBar = document.getElementById("nav-bar");
+	  if (!navBar) return;
 
 	  this.menuBtn = document.createElement("toolbarbutton");
-	  this.menuBtn.setAttribute("id", "userChromeJSmanager_MenuBtn");
+	  this.menuBtn.setAttribute("id", "userChromeJsManagerMenuBtn");
 	  this.menuBtn.setAttribute("class", "toolbarbutton-1 chromeclass-toolbar-additional");//
-	  this.menuBtn.setAttribute("label", "userChromeJS管理器");
+	  this.menuBtn.setAttribute("label", "userChromeJs管理器");
 	  this.menuBtn.setAttribute("tooltiptext", "userChromeJS管理器");
 	  this.menuBtn.setAttribute("type", "menu" /*下拉菜单,右键菜单请替换为*//*"context", "_child"*/);
 	  this.menuBtn.setAttribute("removable", "true");
-	  this.menuBtn.style.listStyleImage = iconImage;
-	    
-	  this.menuBtn.style.opacity = userChromejs.getPref("userChrome.disable.directory", "str").search(/\*/g) != -1?"0.3":"1.0";//初始状态当全部脚本被Disable(即禁用UC)时反显
-	  
+	  this.menuBtn.style.listStyleImage = "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAArUlEQVQ4je3QMQoCMRCF4ddPlRvkBGmEhVRb2W5lueAltvMWlmmFNENO4AkCe4MUHsLS4tmsjWQLF5UVHPiZ7mMY4GfGGENrLZ1zTCl1McY+hDA452itpTGGtwtmWwdYShmf+4N1sGkaeu/Zti0/Am4AbgHuAO4BHgAeRXgS4VmEo8gXwMfpqppV9TrtrKr5HWCeA1NKXa3FYIyxr7UYDCEMtRaDL/+w1jrA1c4do7gmzOLZkZYAAAAASUVORK5CYII=)";
 	  navBar.appendChild(this.menuBtn);
 
 //never ever touch code below Pls!
-	  var xml_menuBtn = '\
-						<menupopup id="userChromejs_options_MenuBtn"\
+		var xml_menuBtn = '\
+						<menupopup id="userChromejs_options"\
 							  onpopupshowing="userChromejs.onpopup();"\
 							  context="">\
 							<menuitem label="打开Chrome文件夹"\
@@ -266,7 +131,7 @@
 									  class="menuitem-iconic"\
 									  oncommand="userChromejs.rebuild();"/>\
 							<menuitem label="在每个新窗口都重置脚本"\
-							          id="userChrome_setting_MenuBtn"\
+							          id="userChrome_setting"\
 									  tooltiptext="仅重新载入选中的脚本"\
 									  accesskey="u"\
 							          oncommand="userChromejs.setting();"\
@@ -278,18 +143,18 @@
 									  oncommand="userChromejs.restartApp();"/>\
 							<menuseparator />\
 							<menu label="userChromeJS用户脚本命令..."\
-								  id="userChromejs_script_options_MenuBtn"\
+								  id="userChromejs_script_options_Menu"\
 								  accesskey="s"\
 								  class="menu-iconic">\
-								<menupopup id="userChromejs_script_options_MenuBtnPopup" />\
+								<menupopup id="userChromejs_script_options_MenuPopup" />\
 							</menu>\
 						</menupopup>\
 		';
-
+//
 	  var range_menuBtn = document.createRange();
-	  var referenceNode_menuBtn = document.getElementById("userChromeJSmanager_MenuBtn");
+	  var referenceNode = document.getElementById("userChromeJsManagerMenuBtn");
 	  
-	  range_menuBtn.selectNodeContents(referenceNode_menuBtn);
+	  range_menuBtn.selectNodeContents(referenceNode);
 	  range_menuBtn.collapse(false);
 	  range_menuBtn.insertNode(range_menuBtn.createContextualFragment(xml_menuBtn.replace(/\n|\t/g, '')));
 	  range_menuBtn.detach();
@@ -475,54 +340,41 @@
     onpopup: function(){
       var menu;
 	  var menuApp;
-	  var menuBtn;
       var flag = this.getPref("userChrome.enable.reuse",'bool',true);
-      var menuitemTools = document.getElementById('userChrome_setting_ToolsMenu');
-      menuitemTools.setAttribute('checked', !flag);
-      var menuitemApp = document.getElementById('userChrome_setting_AppMenu');
+      var menuitem = document.getElementById('userChrome_setting');
+      menuitem.setAttribute('checked', !flag);
+      var menuitemApp = document.getElementById('userChrome_setting_appMenu');
       menuitemApp.setAttribute('checked', !flag);
-      var menuitemBtn = document.getElementById('userChrome_setting_MenuBtn');
-      menuitemBtn.setAttribute('checked', !flag);
 	  
 //modified to add or remove extra menu items
-      var uc_menupopupTools = document.getElementById("userChromejs_options_ToolsMenu");
-      for(var i = 6, len = uc_menupopupTools.childNodes.length; i < len; i++){//4
-        uc_menupopupTools.removeChild(uc_menupopupTools.lastChild);
+      var uc_menupopup = document.getElementById("userChromejs_options");
+      for(var i = 6, len = uc_menupopup.childNodes.length; i < len; i++){//4
+        uc_menupopup.removeChild(uc_menupopup.lastChild);
       }
 	  
-      var uc_menupopupApp = document.getElementById("userChromejs_options_AppMenu");
-      for(var j = 6, len = uc_menupopupApp.childNodes.length; j < len; j++){//4
+      var uc_menupopupApp = document.getElementById("userChromejs_options_appMenu");
+      for(var k = 4, len = uc_menupopupApp.childNodes.length; k < len; k++){//4
         uc_menupopupApp.removeChild(uc_menupopupApp.lastChild);
       }
-	  
-      var uc_menupopupBtn = document.getElementById("userChromejs_options_MenuBtn");
-      for(var k = 6, len = uc_menupopupBtn.childNodes.length; k < len; k++){//4
-        uc_menupopupBtn.removeChild(uc_menupopupBtn.lastChild);
-      }
 
-      var menuseparatorTools = document.createElement('menuseparator');
-      uc_menupopupTools.appendChild(menuseparatorTools);
+      var menuseparator = document.createElement('menuseparator');
+      uc_menupopup.appendChild(menuseparator);
 
       var menuseparatorApp = document.createElement('menuseparator');
       uc_menupopupApp.appendChild(menuseparatorApp);
-
-      var menuseparatorBtn = document.createElement('menuseparator');
-      uc_menupopupBtn.appendChild(menuseparatorBtn);
 	  
-      menuitemTools = document.createElement('menuitem');
-      menuitemTools.setAttribute('label','\u542f\u7528/\u7981\u7528 userChromeJS');//启用禁用(工具栏)
-	  menuitemTools.setAttribute('id','userChromeJStoggle_ToolsMenu');//避免误删除图标(见下)
-	  menuitemTools.setAttribute('tooltiptext','\u56E7rz\n\u5371\u9669\u52A8\u4F5C\uFF01');
-      menuitemTools.setAttribute('oncommand','userChromejs.chgDirStat("*");');
-      menuitemTools.setAttribute('onclick','userChromejs.clickDirMenuitem(event,true)');
-      menuitemTools.setAttribute('type','checkbox');
-      menuitemTools.setAttribute('checked', !userChrome_js.dirDisable['*']);
-      menuitemTools.dirName = '*';
-      uc_menupopupTools.appendChild(menuitemTools);
+      menuitem = document.createElement('menuitem');
+      menuitem.setAttribute('label','\u542f\u7528/\u7981\u7528 userChromeJS');//启用禁用
+	  menuitem.setAttribute('tooltiptext','\u56E7rz\n\u5371\u9669\u52A8\u4F5C\uFF01');
+      menuitem.setAttribute('oncommand','userChromejs.chgDirStat("*");');
+      menuitem.setAttribute('onclick','userChromejs.clickDirMenuitem(event,true)');
+      menuitem.setAttribute('type','checkbox');
+      menuitem.setAttribute('checked', !userChrome_js.dirDisable['*']);
+      menuitem.dirName = '*';
+      uc_menupopup.appendChild(menuitem);
 	  
       menuitemApp = document.createElement('menuitem');
       menuitemApp.setAttribute('label','\u542f\u7528/\u7981\u7528 userChromeJS');//启用禁用(火狐橙)
-	  menuitemApp.setAttribute('id','userChromeJStoggle_AppMenu');//避免误删除图标(见下)
 	  menuitemApp.setAttribute('tooltiptext','\u56E7rz\n\u5371\u9669\u52A8\u4F5C\uFF01');
       menuitemApp.setAttribute('oncommand','userChromejs.chgDirStat("*");');
       menuitemApp.setAttribute('onclick','userChromejs.clickDirMenuitem(event,true)');
@@ -530,19 +382,7 @@
       menuitemApp.setAttribute('checked', !userChrome_js.dirDisable['*']);
       menuitemApp.dirName = '*';
       uc_menupopupApp.appendChild(menuitemApp);
-	  
-      menuitemBtn = document.createElement('menuitem');
-      menuitemBtn.setAttribute('label','\u542f\u7528/\u7981\u7528 userChromeJS');//启用禁用(按钮下拉菜单)
-	  menuitemBtn.setAttribute('id','userChromeJStoggle_MenuBtn');//避免误删除图标(见下)
-	  menuitemBtn.setAttribute('tooltiptext','\u56E7rz\n\u5371\u9669\u52A8\u4F5C\uFF01');
-      menuitemBtn.setAttribute('oncommand','userChromejs.chgDirStat("*");');
-      menuitemBtn.setAttribute('onclick','userChromejs.clickDirMenuitem(event,true)');
-      menuitemBtn.setAttribute('type','checkbox');
-      menuitemBtn.setAttribute('checked', !userChrome_js.dirDisable['*']);
-      menuitemBtn.dirName = '*';
-      uc_menupopupBtn.appendChild(menuitemBtn);
 
-//keep it start
       for(var j = 0, lenj = userChrome_js.arrSubdir.length; j < lenj; j++){
         var dirName = userChrome_js.arrSubdir[j] == "" ? "root" : userChrome_js.arrSubdir[j];
         var flg = false;
@@ -561,7 +401,6 @@
           }
         }
         if(!flg) continue;
-//keep it end
 
         var menu = document.createElement('menu');
         menu.setAttribute('label','chrome/' + (dirName=="root"?"":dirName) );
@@ -622,7 +461,7 @@
         }
         menu.appendChild(menupopup);
 		
-        uc_menupopup = document.getElementById("userChromejs_options_ToolsMenu");
+        uc_menupopup = document.getElementById("userChromejs_options");
         uc_menupopup.appendChild(menu);
 
 //redo start
@@ -685,72 +524,9 @@
         }		
         menuApp.appendChild(menupopupApp);
 		
-        uc_menupopupApp = document.getElementById("userChromejs_options_AppMenu");
+        uc_menupopupApp = document.getElementById("userChromejs_options_appMenu");
         uc_menupopupApp.appendChild(menuApp);
 //redo over
-//trido start
-        var menuBtn = document.createElement('menu');
-        menuBtn.setAttribute('label','chrome/' + (dirName=="root"?"":dirName) );
-        menuBtn.setAttribute('onclick','userChromejs.clickDirMenu(event)');
-        if(userChrome_js.dirDisable[dirName])
-          menuBtn.setAttribute('style', 'font-style:italic;');
-        menuBtn.dirName = dirName;
-
-        menupopupBtn = document.createElement('menupopup');
-        menupopupBtn.setAttribute('onpopupshowing','event.stopPropagation();');
-
-        menuitemBtn = document.createElement('menuitem');
-        menuitemBtn.setAttribute('label','chrome/' + (dirName=="root"?"":dirName) + ' \uFEFF\u811A\u672C\u5168\u90E8\u542F\u7528/\u505C\u7528');
-        menuitemBtn.setAttribute('oncommand', 'userChromejs.chgDirStat(this.dirName);');
-        menuitemBtn.setAttribute('onclick','userChromejs.clickDirMenuitem(event)');
-        menuitemBtn.setAttribute('type', 'checkbox');
-        menuitemBtn.setAttribute('checked', !userChrome_js.dirDisable[dirName]);
-        menuitemBtn.dirName = dirName;
-        menupopupBtn.appendChild(menuitemBtn);
-
-        menuseparatorBtn = document.createElement("menuseparator");//子文件夹名分割线
-        menupopupBtn.appendChild(menuseparatorBtn);
-
-        var flg = false;
-        for(var i = 0, len = userChrome_js.scripts.length; i < len; i++){
-          var script = userChrome_js.scripts[i];
-          if(script.dir != dirName) continue;
-            flg = true;
-            menuitemBtn = document.createElement('menuitem');
-            menuitemBtn.setAttribute('label',script.filename);
-            menuitemBtn.setAttribute('oncommand','userChromejs.chgScriptStat(this.script.filename);');
-            menuitemBtn.setAttribute('onclick','userChromejs.clickScriptMenu(event)');
-            menuitemBtn.setAttribute('type','checkbox');
-            menuitemBtn.setAttribute('checked',!userChrome_js.scriptDisable[script.filename] );
-            if(script.description)
-              menuitemBtn.setAttribute('tooltiptext',script.description);
-            menuitemBtn.script = script;
-            menupopupBtn.appendChild(menuitemBtn);
-        }
-        for(var i = 0, len = userChrome_js.overlays.length; i < len; i++){
-          var script = userChrome_js.overlays[i];
-          if(script.dir != dirName) continue;
-            if(flg){
-              menuseparatorBtn = document.createElement('menuseparator');
-              menupopupBtn.appendChild(menuseparatorBtn);
-            }
-            flg = false;
-            menuitemBtn = document.createElement('menuitem');
-            menuitemBtn.setAttribute('label',script.filename);
-            menuitemBtn.setAttribute('oncommand','userChromejs.chgScriptStat(this.script.filename);');
-            menuitemBtn.setAttribute('onclick','userChromejs.clickScriptMenu(event)');
-            menuitemBtn.setAttribute('type','checkbox');
-            menuitemBtn.setAttribute('checked',!userChrome_js.scriptDisable[script.filename] );
-            if(script.description)
-              menuitemBtn.setAttribute('tooltiptext',script.description);
-            menuitemBtn.script = script;
-            menupopupBtn.appendChild(menuitemBtn);
-        }		
-        menuBtn.appendChild(menupopupBtn);
-		
-        uc_menupopupBtn = document.getElementById("userChromejs_options_MenuBtn");
-        uc_menupopupBtn.appendChild(menuBtn);
-//trido over
       }
     },
 //Redo over
@@ -760,70 +536,26 @@
         event.stopPropagation();
         event.preventDefault();
         userChromejs.chgDirStat(event.target.dirName);
-		const MenuStyleCube = 'font-style:italic;opacity:0.5;';
         if(event.target.firstChild && event.target.firstChild.firstChild)
           event.target.firstChild.firstChild.setAttribute('checked',!userChrome_js.dirDisable[event.target.dirName] );
-        if(!!userChrome_js.dirDisable[event.target.dirName]) {
-          event.target.setAttribute('style', MenuStyleCube);
-		  if(event.target.firstChild && event.target.firstChild.firstChild) {
-		  event.target.firstChild.firstChild.setAttribute('style', MenuStyleCube);
-		  }
-		}
-        else {
+        if(!!userChrome_js.dirDisable[event.target.dirName])
+          event.target.setAttribute('style', 'font-style:italic;');
+        else
           event.target.removeAttribute('style');
-		  if(event.target.firstChild && event.target.firstChild.firstChild) {
-			event.target.firstChild.firstChild.removeAttribute('style');
-		  }
-		}
       }
     },
 
     clickDirMenuitem: function(event,stop){
-		const MenuitemStyleCube = 'font-style: italic;opacity: 0.5;';
-		var MenuitemStyle = event.target.getAttribute('style').toString();
-		if (event.target.parentNode.parentNode) {
-			var MenuitemStylePN = event.target.parentNode.parentNode.getAttribute('style').toString();
-		}
-		if(event.button == 1 || event.button == 2) {//即鼠标中右键
-			event.stopPropagation();
-			event.preventDefault();
-			userChromejs.chgDirStat(event.target.dirName);
-			event.target.setAttribute('checked',!userChrome_js.dirDisable[event.target.dirName] );
-			if (!!userChrome_js.dirDisable[event.target.dirName]) {
-				MenuitemStyle = MenuitemStyle + MenuitemStyleCube;
-				event.target.setAttribute('style', MenuitemStyle);
-				if (event.target.parentNode.parentNode) {
-					MenuitemStylePN = MenuitemStylePN + MenuitemStyleCube;
-					event.target.parentNode.parentNode.setAttribute('style', MenuitemStylePN);
-				}
-			}
-			else {
-				MenuitemStyle = MenuitemStyle.replace(/(font-style|opacity):[^;]+;/g, '');
-				event.target.setAttribute('style', MenuitemStyle);
-				if (event.target.parentNode.parentNode) {
-					MenuitemStylePN = MenuitemStylePN.replace(/(font-style|opacity):[^;]+;/g, '');
-					event.target.parentNode.parentNode.setAttribute('style', MenuitemStylePN);
-				}
-			}
-		}
-		else {//event.button == 0//即鼠标左键
-			if (!userChrome_js.dirDisable[event.target.dirName]) {//与中右键情形刚好相反，因oncommand已在切换状态的原因
-				MenuitemStyle = MenuitemStyle + MenuitemStyleCube;
-				event.target.setAttribute('style', MenuitemStyle);//对自身好像无作用
-				//if(event.target.parentNode.parentNode) {//NG
-					//MenuitemStylePN = MenuitemStylePN + MenuitemStyleCube;//对上一级有作用
-					//event.target.parentNode.parentNode.setAttribute('style', MenuitemStylePN);
-				//}
-			}
-			else {
-				MenuitemStyle = MenuitemStyle.replace(/(font-style|opacity):[^;]+;/g, '');
-				event.target.setAttribute('style', MenuitemStyle);
-				if(event.target.parentNode.parentNode) {
-					MenuitemStylePN = MenuitemStylePN.replace(/(font-style|opacity):[^;]+;/g, '');
-					event.target.parentNode.parentNode.setAttribute('style', MenuitemStylePN);
-				}
-			}
-		}
+      if(event.button == 1 || event.button == 2){
+        event.stopPropagation();
+        event.preventDefault();
+        userChromejs.chgDirStat(event.target.dirName);
+        event.target.setAttribute('checked',!userChrome_js.dirDisable[event.target.dirName] );
+        if(!stop && !!userChrome_js.dirDisable[event.target.dirName])
+          event.target.parentNode.parentNode.setAttribute('style', 'font-style:italic;');
+        else
+          event.target.parentNode.parentNode.removeAttribute('style');
+      }
     },
 
     clickScriptMenu: function(event){
@@ -1010,7 +742,6 @@
     //あまり使わないメニューのリスト
     menues: [
       "AutoCopy_settings",//
-      "AutoPopupCompanion_settings",//
       "GrabScroll_optionsMenu",
       "localMark_settings",//
       "menutabTooltip",
@@ -1019,16 +750,12 @@
       "linkInNewTabForSpecifiedPageToolMenu",
       "ieviewModokiTool",
       "linkloadInBackgroundToolMenu",
-	  "NextPage_settings",//翻页&预读
-      "rebuild_userChrome_settings",//UC管理器本身
-	  "refererChanger_settings",//破解图片外链修改版
+      "rebuild_userChrome_settings",//
 	  "reload_userchrome_css",//
 	  "reload_usercontent_css",//
       "SaveFolderToolsMenu",
-	  "SmartScrollbar_switchOnOff",//
-      "userChrome_js_settings",//userChrome.js引导文件中的子目录设定，是否使用.63folder等
+	  "SmartScrollbar_OnOff_switch",//
       "UserCSSLoader_settings",//
-	  "UserScriptLoader_settings",//
 	  "WebScreenShotMenu",//
 	  "translation_optionsMenu",//
     ],
@@ -1047,7 +774,7 @@
     },
 //用户脚本命令菜单（下拉子菜单）
     moveMenu: function(){
-      var menupopup = document.getElementById('userChromejs_script_options_MenuBtnPopup');
+      var menupopup = document.getElementById('userChromejs_script_options_MenuPopup');//userChromejs_script_options
 	  
       if (!menupopup)
         return false;
@@ -1073,7 +800,7 @@
 		var toolbars = document.querySelectorAll("toolbar");
 		Array.slice(toolbars).forEach(function (toolbar) {
 			var currentset = toolbar.getAttribute("currentset");
-			if (currentset.split(",").indexOf("userChromeJSmanager_MenuBtn"/* 按钮 ID */) < 0) return;
+			if (currentset.split(",").indexOf("userChromeJsManagerMenuBtn"/* 按钮 ID */) < 0) return;
 			toolbar.currentSet = currentset;
 			try {
 				BrowserToolboxCustomizeDone(true);
@@ -1083,6 +810,45 @@
 	},
   }
   updateToolbar.runOnce();
- ]]></script>
+  ]]></script>
 
+  <menupopup id="appmenuPrimaryPane"><!--taskPopup -->
+    <!--在火狐橙AppMenu上添加UserChromeJs管理菜单-->
+    <menu label="userChromeJS管理"
+          id="userChromeJs_Manager_appMenu"
+		  tooltiptext="userChromeJS管理器"
+          accesskey="u"
+		  class="menu-iconic"
+		  image="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACASURBVDhPY2CgBnB0dGx1cnL6jG4WSAwkR9AOoKI/QMX/sRjwHyj3k6ABIM24DMAmjmHg4DHAxcXFBuY8BwcHa1wuw+aFZzDFxNCggEWJHSDHC6jxOTGakdRgRDvOwEX2GsEoRVZAdBjgMpVqBlDiBXyxQzgQ8cTOL6IyGTEhDgCXooZ9ZJ3WXAAAAABJRU5ErkJggg=="
+		  insertbefore="appmenu_webDeveloper">
+      <menupopup id="userChromejs_options_appMenu"
+                 onpopupshowing="userChromejs.onpopup();"
+                 context=""><!--用户脚本列表弹出菜单-->
+        <menuitem label="打开Chrome文件夹"
+                  id="userChromejs_openChromeFolder_appMenu"
+				  tooltiptext="即用户脚本文件夹"
+				  accesskey="h"
+				  class="menuitem-iconic"
+                  oncommand='new Components.Constructor("@mozilla.org/file/local;1","nsILocalFile", "initWithPath")(Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties).get("UChrm", Components.interfaces.nsIFile).path).reveal();'/>
+        <menuitem label="打开新窗口并重置脚本"
+                  id="userChromejs_rebuild_appMenu"
+				  tooltiptext="仅重新载入选中的脚本"
+				  accesskey="x"
+				  class="menuitem-iconic"
+				  oncommand="userChromejs.rebuild();"/>
+        <menuitem label="在每个新窗口都重置脚本"
+                  id="userChrome_setting_appMenu"
+				  tooltiptext="仅重新载入选中的脚本"
+                  accesskey="u"
+                  oncommand="userChromejs.setting();"
+                  type="checkbox"/>
+		<menuitem label="重新启动浏览器"
+                  id="userChromejs_restartApp_appMenu"
+				  accesskey="r"
+				  class="menuitem-iconic"
+                  oncommand="userChromejs.restartApp();"/>
+        <menuseparator />
+	  </menupopup>
+    </menu>
+  </menupopup>
 </overlay>
