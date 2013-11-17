@@ -1,0 +1,1 @@
+[urlAddonBar.uc.xul](urlAddonBar.uc.xul), 将附加组件栏移到地址栏
